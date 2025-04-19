@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  php-apache:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "80:80"  # Mapeamos el puerto 80 del contenedor al 80 de tu PC
+    volumes:
+      - ./proyecto1:/var/www/html/proyecto1
+      - ./proyecto2:/var/www/html/proyecto2
+      - ./proyecto3:/var/www/html/proyecto3
+    restart: always  # Reinicia el contenedor si falla
+
+  # Opcional: Añadir MySQL
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Opcional: Añadir PHPMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:

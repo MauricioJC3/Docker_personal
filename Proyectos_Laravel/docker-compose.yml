@@ -1,0 +1,62 @@
+services:
+  laravel-server1:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8000:80"
+    volumes:
+      - ./proyecto1:/var/www/html/proyecto1
+      - ./docker/apache-proyecto1.conf:/etc/apache2/sites-enabled/000-default.conf
+    environment:
+      - APP_ENV=local
+    networks:
+      - laravel_network
+    depends_on:
+      - db
+  # Proyecto 2
+  laravel-server2:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8001:80"
+    volumes:
+      - ./proyecto2:/var/www/html/proyecto2
+      - ./docker/apache-proyecto2.conf:/etc/apache2/sites-enabled/000-default.conf
+    environment:
+      - APP_ENV=local
+    networks:
+      - laravel_network
+    depends_on:
+      - db
+
+  # Base de datos (compartida)
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel_network
+
+  # PHPMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+    networks:
+      - laravel_network
+
+volumes:
+  mysql_data:
+
+networks:
+  laravel_network:
+    driver: bridge
