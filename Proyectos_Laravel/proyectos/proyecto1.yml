@@ -1,0 +1,16 @@
+services:
+  proyecto:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8000:80"
+    volumes:
+      - ../proyecto1:/var/www/html/proyecto1
+      - ../docker/apache-proyecto1.conf:/etc/apache2/sites-enabled/000-default.conf
+    environment:
+      - APP_ENV=local
+    networks:
+      - laravel_network
+    depends_on:
+      - db

@@ -1,0 +1,15 @@
+services:
+  laravel-server1:
+    extends:
+      file: ./proyectos/proyecto1.yml
+      service: proyecto
+
+  laravel-server2:
+    extends:
+      file: ./proyectos/proyecto2.yml
+      service: proyecto
+
+  laravel-server3:
+    extends:
+      file: ./proyectos/proyecto3.yml
+      service: proyecto
