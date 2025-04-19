@@ -8,3 +8,8 @@ services:
     extends:
       file: ./proyectos/proyecto2.yml
       service: proyecto
+
+  laravel-server3:
+    extends:
+      file: ./proyectos/proyecto3.yml
+      service: proyecto
