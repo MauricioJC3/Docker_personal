@@ -1,0 +1,50 @@
+services:
+  laravel-dev:
+    build: .  # Usa el Dockerfile
+    image: laravel-dev-8.3  # Nombre personalizado para la imagen
+    container_name: laravel-dev
+    restart: unless-stopped
+    volumes:
+      - ./projects:/var/www/html  # Monta tu carpeta local
+    networks:
+      - laravel-network
+    command: tail -f /dev/null  # Mantiene el contenedor activo
+
+  mysql:
+    image: mysql:8.0
+    container_name: laravel-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_HOST: '%'  # 👈 ¡Nueva línea clave!
+    volumes:
+      - mysql-data:/var/lib/mysql  # Persistencia de datos
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # 👈 ¡Esta línea nueva!
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: laravel-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - laravel-network
+
+volumes:
+  mysql-data:
+
+networks:
+  laravel-network:
+    driver: bridge
